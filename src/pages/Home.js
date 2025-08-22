@@ -9,7 +9,7 @@ const Home = () => {
       {/* Hero Image Section - Outside content container */}
       <div className="hero-image-section">
         <img 
-          src="public/images/hero/hero-banner.jpg" 
+          src="build/images/hero/hero-banner.jpg" 
           alt="Hero Banner" 
           className="hero-image"
         />
