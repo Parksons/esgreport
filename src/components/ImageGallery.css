@@ -1,31 +1,37 @@
 .image-gallery {
   position: relative;
   width: 100%;
-  height: 100vh;
-  max-height: 800px;
+  /* Remove fixed height to let it adapt to image dimensions */
+  height: auto;
   overflow: hidden;
   background: #000;
-  aspect-ratio: 1;
+  /* Center the gallery container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .gallery-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  /* Let height be determined by the image */
+  height: auto;
+  /* Center the container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .gallery-slides {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 
 .gallery-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: auto;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   display: flex;
@@ -39,12 +45,16 @@
 
 .gallery-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  /* Use auto height to maintain image aspect ratio */
+  max-width: 100%;
+  /* Ensure image is fully visible */
+  object-fit: contain;
   object-position: center;
+  /* Remove any max-height constraints */
 }
 
-/* Navigation Arrows */
+/* Navigation Arrows - Positioned relative to the image */
 .gallery-nav {
   position: absolute;
   top: 50%;
@@ -81,13 +91,8 @@
   right: 20px;
 }
 
-/* Responsive Design */
+/* Responsive Design - Let images scale naturally */
 @media (max-width: 1024px) {
-  .image-gallery {
-    height: 80vh;
-    max-height: 600px;
-  }
-  
   .gallery-nav {
     padding: 14px 11px;
     font-size: 17px;
@@ -95,11 +100,6 @@
 }
 
 @media (max-width: 768px) {
-  .image-gallery {
-    height: 70vh;
-    max-height: 500px;
-  }
-  
   .gallery-nav {
     padding: 12px 10px;
     font-size: 16px;
@@ -107,11 +107,6 @@
 }
 
 @media (max-width: 640px) {
-  .image-gallery {
-    height: 60vh;
-    max-height: 450px;
-  }
-  
   .gallery-nav {
     padding: 11px 9px;
     font-size: 15px;
@@ -119,11 +114,6 @@
 }
 
 @media (max-width: 480px) {
-  .image-gallery {
-    height: 50vh;
-    max-height: 400px;
-  }
-  
   .gallery-nav {
     padding: 10px 8px;
     font-size: 14px;
@@ -131,11 +121,6 @@
 }
 
 @media (max-width: 375px) {
-  .image-gallery {
-    height: 45vh;
-    max-height: 350px;
-  }
-  
   .gallery-nav {
     padding: 9px 7px;
     font-size: 13px;
@@ -143,11 +128,6 @@
 }
 
 @media (max-width: 320px) {
-  .image-gallery {
-    height: 40vh;
-    max-height: 300px;
-  }
-  
   .gallery-nav {
     padding: 8px 6px;
     font-size: 12px;
