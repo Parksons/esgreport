@@ -15,7 +15,7 @@ origins = [
     "http://localhost:3001",  # Alternative React port
     "http://127.0.0.1:3000", # Alternative localhost
     "http://127.0.0.1:3001", # Alternative localhost
-    "https://esgreport-alpha.vercel.app/"  # Production domain
+    "https://esgreport-alpha.vercel.app"  # Production domain
 ]
 
 app.add_middleware(
