@@ -14,8 +14,8 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
 
-  // FastAPI server URL - using proxy configuration from package.json
-  const API_BASE_URL = ''; // Empty string means relative URLs, will use proxy
+  // FastAPI server URL - production deployment on Railway (HTTPS)
+  const API_BASE_URL = 'https://web-production-5c2cf.up.railway.app';
 
   const validateForm = () => {
     const newErrors = {};
