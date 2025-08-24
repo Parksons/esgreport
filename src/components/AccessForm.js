@@ -14,6 +14,9 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
 
+  // FastAPI server URL - using proxy configuration from package.json
+  const API_BASE_URL = ''; // Empty string means relative URLs, will use proxy
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -69,17 +72,52 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(true);
       
       try {
-        // Simulate API call to send OTP
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log('🔄 Sending OTP request to:', `${API_BASE_URL}/send-otp`);
+        console.log('📧 Email:', formData.email);
         
-        // For demo purposes, we'll use a fixed OTP (123456)
-        // In production, this would be sent via email
-        console.log('OTP sent to:', formData.email);
+        // Call FastAPI endpoint to send OTP
+        const response = await fetch(`${API_BASE_URL}/send-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email
+          })
+        });
+
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response headers:', response.headers);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('❌ Server error:', errorData);
+          throw new Error(errorData.detail || 'Failed to send OTP');
+        }
+
+        const result = await response.json();
+        console.log('✅ OTP sent successfully:', result);
         
         setShowOtpForm(true);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error sending OTP:', error);
+        console.error('❌ Error sending OTP:', error);
+        
+        // More specific error messages
+        let errorMessage = 'Failed to send OTP. Please try again.';
+        
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = 'Cannot connect to server. Please make sure the FastAPI server is running on port 8000.';
+        } else if (error.message.includes('CORS')) {
+          errorMessage = 'CORS error. Please check server configuration.';
+        } else {
+          errorMessage = error.message;
+        }
+        
+        setErrors(prev => ({
+          ...prev,
+          email: errorMessage
+        }));
         setIsLoading(false);
       }
     } else {
@@ -89,29 +127,42 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
         return;
       }
       
-      if (otp !== '123456') { // Demo OTP
-        setOtpError('Invalid OTP. Please try again.');
-        return;
-      }
-      
       setIsLoading(true);
       
       try {
-        // Simulate API call to verify OTP
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log('🔄 Verifying OTP for:', formData.email);
+        
+        // Call FastAPI endpoint to verify OTP
+        const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            otp: otp
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Invalid OTP');
+        }
+
+        const result = await response.json();
+        console.log('✅ OTP verified successfully:', result);
         
         // Success - grant access
         onSuccess();
         onClose();
         setIsLoading(false);
       } catch (error) {
-        console.error('Error verifying OTP:', error);
+        console.error('❌ Error verifying OTP:', error);
+        setOtpError(error.message || 'Invalid OTP. Please try again.');
         setIsLoading(false);
       }
     }
   };
-
-
 
   const handleClose = () => {
     if (!isLoading) {
@@ -140,7 +191,7 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
         
         <div className="access-form-content">
           <h2 className="access-form-title">
-            {showOtpForm ? 'Verify Your Email' : ''}
+            {showOtpForm ? 'Verify Your Email' : 'Access Report'}
           </h2>
           
           <p className="access-form-subtitle">
