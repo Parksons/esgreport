@@ -4,3 +4,4 @@ pydantic
 python-multipart
 email-validator
 python-dotenv
+PyJWT
