@@ -1,7 +1,6 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
-python-multipart
 email-validator
 python-dotenv
 PyJWT
