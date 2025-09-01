@@ -183,10 +183,33 @@
   gap: 15px;
 }
 
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .user-name {
   font-size: 0.9rem;
   color: #6b7280;
   font-weight: 500;
+}
+
+.logout-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
 }
 
 /* Mobile Toggle Button */

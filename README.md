@@ -1,239 +1,169 @@
-# Secure Content Website
+# ESG Report - OTP Verification System
 
-A React-based secure website with content protection features, access control, and email verification. This application implements comprehensive security measures to prevent unauthorized copying, printing, and access to protected content.
+A secure ESG (Environmental, Social & Governance) report viewer with email-based OTP verification system.
 
 ## Features
 
-### 🔒 Content Security
-- **Print Prevention**: Disables print functionality across all browsers
-- **Copy Protection**: Prevents text selection, copying, and right-click context menu
-- **Download Prevention**: Blocks content downloading and saving
-- **Developer Tools Detection**: Detects and prevents access to browser developer tools
-- **Keyboard Shortcut Blocking**: Disables common shortcuts (Ctrl+S, Ctrl+P, F12, etc.)
-
-### 🛡️ Access Control
-- **Limited Access**: Visitors can only access the first 3 pages by default
-- **Email Verification**: OTP-based authentication for accessing restricted content
-- **Session Management**: Secure session handling with automatic timeout
-- **Access Indicators**: Visual indicators showing current access level
-
-### 📱 User Experience
-- **Responsive Design**: Works seamlessly across all devices and screen sizes
-- **Professional UI**: Clean, modern interface with smooth animations
-- **Progressive Enhancement**: Graceful degradation for older browsers
-- **Accessibility**: WCAG compliant with proper focus management
-
-### 🔐 Security Features
-- **Content Security Policy (CSP)**: Prevents XSS and injection attacks
-- **Code Obfuscation**: Built-in JavaScript obfuscation for production
-- **Secure Headers**: X-Frame-Options, X-Content-Type-Options, and more
-- **Session Security**: Secure session management with automatic logout
-
-## Technology Stack
-
-- **Frontend**: React 18 with modern hooks
-- **Routing**: React Router DOM v6
-- **Styling**: CSS3 with Grid and Flexbox
-- **Security**: Content Security Policy, XSS Protection
-- **Build Tool**: Create React App
-- **Package Manager**: npm
-
-## Installation
-
-### Prerequisites
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-
-### Setup Instructions
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd secure-content-website
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-### Building for Production
-
-1. **Create production build**
-   ```bash
-   npm run build
-   ```
-
-2. **Serve the production build**
-   ```bash
-   npx serve -s build
-   ```
+- **Secure Access Control**: Email-based OTP verification
+- **Modern UI**: React-based frontend with responsive design
+- **Backend API**: FastAPI server with JWT token authentication
+- **Email Integration**: Gmail API for sending OTP emails
+- **Session Management**: Automatic session timeout and token verification
+- **Gallery View**: Image gallery with access control
 
 ## Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-│   ├── Header.js       # Navigation header with access control
-│   ├── AccessForm.js   # Email verification modal
-│   └── *.css           # Component-specific styles
-├── context/            # React context providers
-│   └── SecurityContext.js  # Authentication and security state
-├── pages/              # Page components
-│   ├── Home.js         # Landing page
-│   ├── About.js        # About page
-│   ├── Services.js     # Services page
-│   ├── Contact.js      # Contact page (restricted)
-│   ├── Blog.js         # Blog page (restricted)
-│   ├── Resources.js    # Resources page (restricted)
-│   └── *.css           # Page-specific styles
-├── App.js              # Main application component
-├── index.js            # Application entry point
-└── *.css               # Global styles
+esgreport/
+├── server/                 # Backend API
+│   ├── newMain.py         # FastAPI server with OTP logic
+│   ├── start_server.py    # Server startup script
+│   └── requirements.txt   # Python dependencies
+├── src/                   # React frontend
+│   ├── components/        # React components
+│   │   ├── AccessForm.js  # OTP verification form
+│   │   ├── Header.js      # Navigation header
+│   │   └── ImageGallery.js # Gallery with access control
+│   ├── context/           # React context
+│   │   └── SecurityContext.js # Authentication state management
+│   └── pages/             # Page components
+└── public/                # Static assets
 ```
 
-## Security Implementation
+## Setup Instructions
 
-### Content Protection
-- Global event listeners prevent right-click, keyboard shortcuts, and text selection
-- CSS properties disable user selection and print functionality
-- JavaScript obfuscation in production builds
+### Backend Setup
 
-### Access Control
-- React Context manages authentication state
-- Local storage for session persistence
-- Automatic session timeout (30 minutes)
-- Route protection for restricted pages
+1. **Navigate to server directory:**
+   ```bash
+   cd server
+   ```
 
-### Email Verification
-- OTP generation and validation
-- Form validation and error handling
-- Secure modal implementation
-- Toast notifications for user feedback
+2. **Install Python dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Configuration
+3. **Set up environment variables:**
+   Create a `.env` file in the server directory with:
+   ```env
+   JWT_SECRET=your-secret-key-change-in-production
+   SMTP_USER=your-gmail@gmail.com
+   GMAIL_TOKEN={"your":"gmail-api-token-json"}
+   ```
 
-### Environment Variables
-Create a `.env` file in the root directory:
+4. **Start the backend server:**
+   ```bash
+   python start_server.py
+   ```
+   The server will run on `http://localhost:8000`
 
-```env
-REACT_APP_API_URL=your_api_url_here
-REACT_APP_EMAIL_SERVICE=your_email_service_here
-```
+### Frontend Setup
 
-### Security Headers
-The application includes comprehensive security headers in `public/index.html`:
+1. **Install Node.js dependencies:**
+   ```bash
+   npm install
+   ```
 
-- Content Security Policy (CSP)
-- X-Content-Type-Options
-- X-Frame-Options
-- X-XSS-Protection
-- Cache control headers
+2. **Start the development server:**
+   ```bash
+   npm start
+   ```
+   The frontend will run on `http://localhost:3000`
 
-## Customization
+## API Endpoints
 
-### Styling
-- Modify `src/App.css` for global styles
-- Update component-specific CSS files for individual styling
-- Use CSS custom properties for consistent theming
+### Authentication Endpoints
 
-### Content
-- Update page components in `src/pages/` to modify content
-- Modify the access form in `src/components/AccessForm.js`
-- Update navigation in `src/components/Header.js`
+- `POST /send-otp` - Send OTP to email
+  - Body: `{"email": "user@example.com", "name": "User Name", "company": "Company Name"}`
+  - Response: `{"success": true, "message": "OTP sent", "expires_in": 300}`
 
-### Security Settings
-- Adjust session timeout in `src/context/SecurityContext.js`
-- Modify security headers in `public/index.html`
-- Update CSP policies as needed
+- `POST /verify-otp` - Verify OTP and get access token
+  - Body: `{"email": "user@example.com", "otp": "123456"}`
+  - Response: `{"success": true, "message": "OTP verified", "access_token": "jwt_token", "token_type": "bearer", "expires_in": 1800}`
 
-## Browser Support
+- `POST /verify-token` - Verify JWT token
+  - Headers: `Authorization: Bearer <token>`
+  - Response: `{"success": true, "message": "Token is valid", "user_data": {"email": "user@example.com"}}`
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
+- `POST /logout` - Logout and invalidate session
+  - Headers: `Authorization: Bearer <token>`
+  - Response: `{"success": true, "message": "Logged out"}`
 
-## Performance
+- `GET /` - Health check
+  - Response: `{"status": "healthy", "message": "API running", "version": "2.0.0"}`
 
-- Optimized bundle size with code splitting
-- Lazy loading for better initial load times
-- Efficient state management with React Context
-- CSS optimizations for smooth animations
+## How It Works
 
-## Accessibility
+### OTP Verification Flow
 
-- WCAG 2.1 AA compliant
-- Keyboard navigation support
-- Screen reader compatibility
-- Focus management
-- High contrast support
+1. **User Access Request**: User fills out the access form with name, company, email, and contact number
+2. **OTP Generation**: Backend generates a 6-digit OTP and sends it via email
+3. **OTP Verification**: User enters the OTP received in email
+4. **Token Generation**: Upon successful verification, backend generates a JWT token
+5. **Access Granted**: Frontend stores the token and grants access to the full gallery
+
+### Security Features
+
+- **Rate Limiting**: Maximum 3 OTP requests per email per 15 minutes
+- **OTP Expiration**: OTPs expire after 5 minutes
+- **Attempt Limiting**: Maximum 3 failed OTP attempts
+- **Session Timeout**: JWT tokens expire after 30 minutes
+- **Token Verification**: Frontend verifies tokens with backend on app startup
+
+### Email Configuration
+
+The system uses Gmail API for sending OTP emails. You need to:
+
+1. Set up a Google Cloud Project
+2. Enable Gmail API
+3. Create OAuth 2.0 credentials
+4. Generate a Gmail token and store it in the `GMAIL_TOKEN` environment variable
+
+## Development
+
+### Backend Development
+
+- **Auto-reload**: The server automatically reloads on code changes
+- **CORS**: Configured to allow frontend requests from localhost and production domains
+- **Error Handling**: Comprehensive error handling with proper HTTP status codes
+
+### Frontend Development
+
+- **React Context**: Uses SecurityContext for global authentication state
+- **Responsive Design**: Mobile-friendly interface
+- **Error Handling**: User-friendly error messages for failed requests
+
+## Production Deployment
+
+### Backend Deployment
+
+The backend is configured for deployment on Railway with:
+- Environment variables for production settings
+- CORS configuration for production domains
+- Health check endpoint for monitoring
+
+### Frontend Deployment
+
+The frontend can be deployed to Vercel, Netlify, or any static hosting service.
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Security warnings in development**
-   - These are expected in development mode
-   - Production builds will have proper security measures
+1. **CORS Errors**: Ensure the frontend URL is in the `origins` list in `newMain.py`
+2. **Email Not Sending**: Check Gmail API credentials and token
+3. **OTP Not Received**: Check spam folder and email configuration
+4. **Token Expired**: User needs to re-authenticate after 30 minutes
 
-2. **Email verification not working**
-   - Check browser console for errors
-   - Ensure email service is properly configured
-   - Verify OTP generation logic
+### Debug Mode
 
-3. **Content still copyable**
-   - Some browsers may bypass certain restrictions
-   - Consider additional server-side protection for critical content
-
-### Development Tips
-
-- Use browser developer tools to test security measures
-- Test on multiple browsers and devices
-- Verify accessibility with screen readers
-- Check performance with Lighthouse
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+Enable debug logging by setting the log level in `start_server.py`:
+```python
+log_level="debug"
+```
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation
-
-## Security Considerations
-
-⚠️ **Important**: This application provides client-side security measures. For production use with highly sensitive content, consider implementing additional server-side security measures:
-
-- Server-side content rendering
-- API-based content delivery
-- Watermarking and fingerprinting
-- Advanced encryption
-- Rate limiting and access logging
-
-The current implementation is suitable for:
-- Educational content protection
-- Business presentations
-- Internal documentation
-- Marketing materials
-- General content security needs
+This project is proprietary software for Parksons Packaging.

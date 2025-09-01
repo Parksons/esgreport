@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useSecurity } from '../context/SecurityContext';
 import './AccessForm.css';
 
 const AccessForm = ({ isOpen, onClose, onSuccess }) => {
+  const { login } = useSecurity();
   const [formData, setFormData] = useState({
     name: '',
     companyName: '',
@@ -15,7 +17,8 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
   const [otpError, setOtpError] = useState('');
 
   // FastAPI server URL - production deployment on Railway (HTTPS)
-  const API_BASE_URL = 'https://web-production-5c2cf.up.railway.app';
+  // const API_BASE_URL = 'https://esgreport-production.up.railway.app/';
+  const API_BASE_URL = 'http://localhost:8000';
 
   const validateForm = () => {
     const newErrors = {};
@@ -82,7 +85,9 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email: formData.email
+            email: formData.email,
+            name: formData.name,
+            company: formData.companyName
           })
         });
 
@@ -151,6 +156,20 @@ const AccessForm = ({ isOpen, onClose, onSuccess }) => {
 
         const result = await response.json();
         console.log('✅ OTP verified successfully:', result);
+        
+        // Store the access token and user data
+        const userInfo = {
+          email: formData.email,
+          name: formData.name,
+          company: formData.companyName,
+          contactNumber: formData.contactNumber,
+          accessToken: result.access_token,
+          tokenType: result.token_type,
+          expiresIn: result.expires_in
+        };
+        
+        // Login the user
+        login(userInfo);
         
         // Success - grant access
         onSuccess();

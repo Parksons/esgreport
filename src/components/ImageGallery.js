@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSecurity } from '../context/SecurityContext';
 import { galleryImages } from '../data/galleryData';
 import AccessForm from './AccessForm';
 import './ImageGallery.css';
 
 const ImageGallery = () => {
+  const { isAuthenticated, userData } = useSecurity();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showAccessForm, setShowAccessForm] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated && userData) {
+      setHasAccess(true);
+    }
+  }, [isAuthenticated, userData]);
 
   const goToPreviousSlide = () => {
     if (currentSlide > 0) {

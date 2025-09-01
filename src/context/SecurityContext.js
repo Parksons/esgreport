@@ -21,17 +21,49 @@ export const SecurityProvider = ({ children }) => {
     const userInfo = localStorage.getItem('userData');
     
     if (authStatus === 'true' && userInfo) {
-      setIsAuthenticated(true);
-      setUserData(JSON.parse(userInfo));
+      const userData = JSON.parse(userInfo);
       
-      // Set session timeout (30 minutes)
-      const timeout = setTimeout(() => {
+      // Verify token with backend
+      verifyTokenWithServer(userData.accessToken).then(isValid => {
+        if (isValid) {
+          setIsAuthenticated(true);
+          setUserData(userData);
+          
+          // Set session timeout (30 minutes)
+          const timeout = setTimeout(() => {
+            logout();
+          }, 30 * 60 * 1000);
+          
+          setSessionTimeout(timeout);
+        } else {
+          // Token is invalid, clear storage
+          logout();
+        }
+      }).catch(() => {
+        // Error verifying token, clear storage
         logout();
-      }, 30 * 60 * 1000);
-      
-      setSessionTimeout(timeout);
+      });
     }
   }, []);
+
+  // Verify token with backend
+  const verifyTokenWithServer = async (token) => {
+    try {
+      const API_BASE_URL = 'https://esgreport-production.up.railway.app/';
+      const response = await fetch(`${API_BASE_URL}/verify-token`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      return false;
+    }
+  };
 
   // Clear timeout on unmount
   useEffect(() => {
@@ -62,7 +94,24 @@ export const SecurityProvider = ({ children }) => {
   };
 
   // Logout function
-  const logout = () => {
+  const logout = async () => {
+    // Call backend logout endpoint if we have a token
+    if (userData?.accessToken) {
+      try {
+        // const API_BASE_URL = 'https://esgreport-production.up.railway.app/';
+        const API_BASE_URL = 'http://localhost:8000';
+        await fetch(`${API_BASE_URL}/logout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${userData.accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        console.error('Error logging out from server:', error);
+      }
+    }
+    
     setIsAuthenticated(false);
     setUserData(null);
     localStorage.removeItem('isAuthenticated');

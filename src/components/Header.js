@@ -3,7 +3,7 @@ import { useSecurity } from '../context/SecurityContext';
 import './Header.css';
 
 const Header = ({ currentPage, onPageChange }) => {
-  const { isAuthenticated, userData } = useSecurity();
+  const { isAuthenticated, userData, logout } = useSecurity();
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -225,7 +225,18 @@ const Header = ({ currentPage, onPageChange }) => {
 
           <div className="user-info">
             {isAuthenticated && userData && (
-              <span className="user-name">Welcome, {userData.name}</span>
+              <div className="user-section">
+                <span className="user-name">Welcome, {userData.name}</span>
+                <button 
+                  className="logout-btn"
+                  onClick={() => {
+                    logout();
+                    closeMobileMenu();
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             )}
           </div>
         </div>
