@@ -98,8 +98,8 @@ export const SecurityProvider = ({ children }) => {
     // Call backend logout endpoint if we have a token
     if (userData?.accessToken) {
       try {
-        // const API_BASE_URL = 'https://esgreport-production.up.railway.app/';
-        const API_BASE_URL = 'http://localhost:8000';
+        const API_BASE_URL = 'https://esgreport-production.up.railway.app';
+        // const API_BASE_URL = 'http://localhost:8000';
         await fetch(`${API_BASE_URL}/logout`, {
           method: 'POST',
           headers: {
