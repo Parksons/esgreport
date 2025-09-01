@@ -1,6 +1,8 @@
 fastapi
-uvicorn[standard]
+uvicorn
 pydantic
-email-validator
 python-dotenv
-PyJWT
+pyjwt
+google-api-python-client
+google-auth
+google-auth-oauthlib
